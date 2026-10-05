@@ -1,0 +1,24 @@
+services:
+  admin:
+    build: .
+    image: keu-bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - bot-data:/app/data
+    # Наружу только на localhost: публикуйте через reverse proxy с HTTPS (Caddy, nginx).
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  bot:
+    image: keu-bot
+    depends_on:
+      - admin
+    restart: unless-stopped
+    env_file: .env
+    command: ["node", "bot.cjs"]
+    volumes:
+      - bot-data:/app/data
+
+volumes:
+  bot-data:
