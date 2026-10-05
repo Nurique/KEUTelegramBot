@@ -9,7 +9,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build && npm run build:bot
+# public/ может отсутствовать после git clone (git не хранит пустые папки).
+RUN mkdir -p public && npm run build && npm run build:bot
 
 FROM node:26-alpine AS runner
 WORKDIR /app
